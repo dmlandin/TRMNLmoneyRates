@@ -1,5 +1,5 @@
-import requests
 import os
+import requests
 from datetime import datetime
 
 API_KEY = os.environ["FRED_API_KEY"]
