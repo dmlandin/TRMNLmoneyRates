@@ -2,8 +2,8 @@ name: Update Money Rates Page
 
 on:
   schedule:
-    - cron: "0 * * * *" # every hour
-  workflow_dispatch: # allows manual runs
+    - cron: "0 * * * *"  # every hour
+  workflow_dispatch:  # allows manual trigger
 
 jobs:
   build:
@@ -21,6 +21,8 @@ jobs:
         run: pip install requests
 
       - name: Generate updated rates.html
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
         run: python generate_html.py
 
       - name: Commit and push changes
@@ -28,5 +30,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
           git add rates.html
-          git commit -m "Update rates.html [CI skip]" || echo "No changes"
+          git commit -m "Update rates.html [CI skip]" || echo "No changes to commit"
           git push
