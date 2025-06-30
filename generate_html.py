@@ -60,3 +60,20 @@ json_data = {
 
 with open("rates.json", "w") as f:
     json.dump(json_data, f, indent=2)
+
+layout_json = {
+    "layout": {
+        "type": "list",
+        "title": "Money Rates",
+        "rows": [
+            {"title": "Fed Funds Rate", "value": f"{values['Fed Funds Rate']}%"},
+            {"title": "SOFR", "value": f"{values['SOFR']}%"},
+            {"title": "10-Year Treasury", "value": f"{values['10-Year Treasury']}%"},
+            {"title": "Prime Rate", "value": f"{values['Prime Rate']}%"},
+            {"title": "Updated", "value": timestamp}
+        ]
+    }
+}
+
+with open("trmnl_layout.json", "w") as f:
+    json.dump(layout_json, f, indent=2)
