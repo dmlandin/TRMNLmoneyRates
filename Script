@@ -1,0 +1,45 @@
+function updateFRED() {
+  const API_KEY = "b912dffd3494abc0ad026f49c38ef4e2";
+  const SERIES = {
+  "FEDFUNDS": "B1",
+  "SOFR": "B2",
+  "GS10": "B3", //API code for 10 year treasury
+  "MPRIME":"B4" //USA Prime rate
+};
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+  for (let series in SERIES) {
+    const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${API_KEY}&file_type=json&sort_order=desc&limit=1`;
+    const response = UrlFetchApp.fetch(url);
+    const data = JSON.parse(response.getContentText());
+    const value = data.observations[0].value;
+    sheet.getRange(SERIES[series]).setValue(`${value}%`);
+  }
+}
+function doGet() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+  const fed = sheet.getRange("B1").getValue();
+  const sofr = sheet.getRange("B2").getValue();
+  const tenYear = sheet.getRange("B3").getValue();
+  const prime = sheet.getRange("B4").getValue();
+
+  const now = Utilities.formatDate(new Date(), "GMT", "yyyy-MM-dd HH:mm:ss") + " UTC";
+
+  const html = `
+    <html>
+      <body>
+        <h2>📈 Money Rates</h2>
+        <p><em>${now}</em></p>
+        <p><strong>Fed Funds Rate:</strong> ${fed}</p>
+        <p><strong>SOFR:</strong> ${sofr}</p>
+        <p><strong>10-Year Treasury:</strong> ${tenYear}</p>
+        <p><strong>Prime Rate:</strong> ${prime}</p>
+      </body>
+    </html>
+  `;
+
+  return ContentService
+    .createTextOutput(html)
+    .setMimeType(ContentService.MimeType.HTML);
+}
