@@ -1,4 +1,5 @@
 import os
+import json
 import requests
 from datetime import datetime
 
@@ -46,3 +47,16 @@ html = f"""<!DOCTYPE html>
 
 with open("rates.html", "w") as f:
     f.write(html)
+
+
+# also going to serve a json file
+json_data = {
+    "fedFundsRate": values["Fed Funds Rate"],
+    "sofr": values["SOFR"],
+    "tenYearTreasury": values["10-Year Treasury"],
+    "primeRate": values["Prime Rate"],
+    "lastUpdated": timestamp
+}
+
+with open("rates.json", "w") as f:
+    json.dump(json_data, f)
