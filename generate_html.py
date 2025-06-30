@@ -59,4 +59,4 @@ json_data = {
 }
 
 with open("rates.json", "w") as f:
-    json.dump(json_data, f)
+    json.dump(json_data, f, indent=2)
