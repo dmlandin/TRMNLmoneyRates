@@ -7,7 +7,7 @@ API_KEY = os.environ["FRED_API_KEY"]
 SERIES = {
     "Fed Funds Rate": "FEDFUNDS",
     "SOFR": "SOFR",
-    "10-Year Treasury": "GS10",
+    "10-Year Treasury": "DGS10",
     "Prime Rate": "MPRIME"
 }
 
