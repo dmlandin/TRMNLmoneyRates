@@ -1,3 +1,4 @@
+#this file to be used with a github workflow to create and publish files that can be pulled/webscraped
 import os
 import json
 import requests
@@ -62,6 +63,7 @@ json_data = {
 with open("rates.json", "w") as f:
     json.dump(json_data, f, indent=2)
 
+# direct formatted json file also for use
 layout_json = {
     "layout": {
         "type": "list",
