@@ -27,7 +27,7 @@ def fetch_latest(series_id):
 
 # Get all values
 values = {label: fetch_latest(code) for label, code in SERIES.items()}
-timestamp = datetime.now(ZoneInfo("America/Phoenix")).strftime("%Y-%m-%d %H:%M:%S UTC")
+timestamp = datetime.now(ZoneInfo("America/Phoenix")).strftime("%Y-%m-%d %H:%M:%S MST")
 
 # Build HTML
 html = f"""<!DOCTYPE html>
