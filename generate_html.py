@@ -2,6 +2,7 @@ import os
 import json
 import requests
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 API_KEY = os.environ["FRED_API_KEY"]
 SERIES = {
@@ -26,7 +27,7 @@ def fetch_latest(series_id):
 
 # Get all values
 values = {label: fetch_latest(code) for label, code in SERIES.items()}
-timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+timestamp = datetime.now(ZoneInfo("America/Phoenix")).strftime("%Y-%m-%d %H:%M:%S UTC")
 
 # Build HTML
 html = f"""<!DOCTYPE html>
