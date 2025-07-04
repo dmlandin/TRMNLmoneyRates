@@ -44,9 +44,9 @@ def extract_medical_spreads(pdf_file: str):
                                 "value": spreads[i]
                             })
                     break
-
-    output_file = f"{quarter_year}_Chatham_Financial_Medical_Spreads.json"
-    with open(output_file, "w") as f:
+#save file and to overwrite existing 
+    output_file = Path("medical_spreads.json")
+    with output_file.open("w") as f:
         json.dump(layout, f, indent=2)
     print(f"✅ Saved: {output_file}")
 
