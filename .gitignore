@@ -1,0 +1,7 @@
+# Ignore PDF inputs
+*.pdf
+market spreads report/*.pdf
+
+# Python junk
+__pycache__/
+*.pyc
