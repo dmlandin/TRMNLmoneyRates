@@ -21,7 +21,35 @@
       },
       {
         "title": "Updated",
-        "value": "2025-07-08 14:12:07 MST"
+        "value": "2025-07-08 14:52:05 MST"
+      }
+    ],
+    "fixedRates": [
+      {
+        "title": "Low Risk",
+        "value": "6.4%"
+      },
+      {
+        "title": "Core",
+        "value": "7.0%"
+      },
+      {
+        "title": "High Risk",
+        "value": "8.4%"
+      }
+    ],
+    "floatingRates": [
+      {
+        "title": "Low Risk",
+        "value": "6.03%"
+      },
+      {
+        "title": "Core",
+        "value": "6.93%"
+      },
+      {
+        "title": "High Risk",
+        "value": "8.13%"
       }
     ]
   }
