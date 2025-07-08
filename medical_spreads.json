@@ -1,19 +1,19 @@
 {
   "layout": {
     "type": "grid",
-    "title": "Chatham Financial Medical CRE Spreads \u2013 Q1 2025",
+    "title": "Chatham Financial Medical CRE Spreads \u2013 Q2 2025",
     "rows": [
       {
         "title": "Low Risk",
-        "value": "2.15%"
+        "value": "2.00%"
       },
       {
         "title": "Core",
-        "value": "2.70%"
+        "value": "2.60%"
       },
       {
         "title": "High Risk",
-        "value": "3.90%"
+        "value": "4.00%"
       },
       {
         "title": "QoQ",
@@ -21,19 +21,19 @@
       },
       {
         "title": "Low Risk",
-        "value": "2.20%"
+        "value": "1.70%"
       },
       {
         "title": "Core",
-        "value": "2.75%"
+        "value": "2.60%"
       },
       {
         "title": "High Risk",
-        "value": "3.95%"
+        "value": "3.80%"
       },
       {
         "title": "QoQ",
-        "value": "-0.20%"
+        "value": "-0.15%"
       }
     ]
   }
