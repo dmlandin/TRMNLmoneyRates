@@ -1,4 +1,3 @@
-#this file to be used with a github workflow to create and publish files that can be pulled/webscraped
 import os
 import json
 import requests
@@ -26,11 +25,36 @@ def fetch_latest(series_id):
     data = resp.json()
     return data['observations'][0]['value']
 
-# Get all values
-values = {label: fetch_latest(code) for label, code in SERIES.items()}
+# Fetch rates
+values = {label: float(fetch_latest(code)) for label, code in SERIES.items()}
 timestamp = datetime.now(ZoneInfo("America/Phoenix")).strftime("%Y-%m-%d %H:%M:%S MST")
 
-# Build HTML
+# Load medical spreads
+with open("medical_spreads.json") as f:
+    spreads = json.load(f)["layout"]["rows"]
+
+# Assume first 4 = Fixed, next 4 = Floating
+fixed_rates = []
+floating_rates = []
+
+for i, row in enumerate(spreads):
+    title = row["title"]
+    value = row["value"].replace("%", "").strip()
+
+    try:
+        spread_val = float(value)
+    except ValueError:
+        continue
+
+    if i < 4 and title != "QoQ":
+        combined = round(values["10-Year Treasury"] + spread_val, 2)
+        fixed_rates.append({"title": title, "value": f"{combined}%"})
+
+    elif i >= 4 and title != "QoQ":
+        combined = round(values["SOFR"] + spread_val, 2)
+        floating_rates.append({"title": title, "value": f"{combined}%"})
+
+# Write HTML
 html = f"""<!DOCTYPE html>
 <html>
   <head>
@@ -44,26 +68,30 @@ html = f"""<!DOCTYPE html>
     <p><strong>SOFR:</strong> {values['SOFR']}%</p>
     <p><strong>10-Year Treasury:</strong> {values['10-Year Treasury']}%</p>
     <p><strong>Prime Rate:</strong> {values['Prime Rate']}%</p>
+
+    <h3>💡 Fixed Rates (10Y + Spread)</h3>
+    <ul>
+"""
+
+for r in fixed_rates:
+    html += f"      <li><strong>{r['title']}:</strong> {r['value']}</li>\n"
+
+html += """    </ul>
+    <h3>💡 Floating Rates (SOFR + Spread)</h3>
+    <ul>
+"""
+
+for r in floating_rates:
+    html += f"      <li><strong>{r['title']}:</strong> {r['value']}</li>\n"
+
+html += """    </ul>
   </body>
 </html>"""
 
-with open("rates.html", "w") as f:
+with open("rates.html", "w", encoding="utf-8") as f:
     f.write(html)
 
-
-# also going to serve a json file
-json_data = {
-    "fedFundsRate": values["Fed Funds Rate"],
-    "sofr": values["SOFR"],
-    "tenYearTreasury": values["10-Year Treasury"],
-    "primeRate": values["Prime Rate"],
-    "lastUpdated": timestamp
-}
-
-with open("rates.json", "w") as f:
-    json.dump(json_data, f, indent=2)
-
-# direct formatted json file also for use
+# Write JSON
 layout_json = {
     "layout": {
         "type": "list",
@@ -74,7 +102,9 @@ layout_json = {
             {"title": "10-Year Treasury", "value": f"{values['10-Year Treasury']}%"},
             {"title": "Prime Rate", "value": f"{values['Prime Rate']}%"},
             {"title": "Updated", "value": timestamp}
-        ]
+        ],
+        "fixedRates": fixed_rates,
+        "floatingRates": floating_rates
     }
 }
 
