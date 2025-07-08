@@ -110,3 +110,4 @@ layout_json = {
 
 with open("trmnl_layout.json", "w") as f:
     json.dump(layout_json, f, indent=2)
+
