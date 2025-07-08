@@ -1,59 +1,89 @@
-import pdfplumber
+import subprocess
 import json
 import re
-import sys
 from pathlib import Path
+from datetime import datetime
+import pdfplumber
 
-def extract_medical_spreads(pdf_file: str):
-    labels = ["Low Risk", "Core", "High Risk", "QoQ"]
+def sanitize(text):
+    return re.sub(r'\s+', ' ', text.strip().lower())
+
+def extract_medical_spreads_from_page(lines, label):
+    for line in lines:
+        if sanitize(line).startswith("medical"):
+            parts = re.split(r'\s+', line.strip())
+            if len(parts) >= 5:
+                return {
+                    f"{label} Low Risk": parts[1],
+                    f"{label} Core": parts[2],
+                    f"{label} High Risk": parts[3],
+                    f"{label} QoQ": parts[4]
+                }
+    return {}
+
+def get_quarter_and_year(text):
+    match = re.search(r'Q[1-4]\s+\d{4}', text)
+    return match.group(0) if match else "Unknown"
+
+def find_latest_pdf(folder_path):
+    pdfs = list(Path(folder_path).glob("*.pdf"))
+    if not pdfs:
+        return None
+    latest_file = max(pdfs, key=lambda f: f.stat().st_ctime)
+    return str(latest_file)
+
+def extract_and_write_json(latest_pdf):
+    floating_data = {}
+    fixed_data = {}
+    quarter = "Unknown"
+
+    with pdfplumber.open(latest_pdf) as pdf:
+        for page in pdf.pages:
+            text = page.extract_text()
+            if not text:
+                continue
+            lines = text.splitlines()
+            if quarter == "Unknown":
+                quarter = get_quarter_and_year(text)
+
+            if "Floating-rate spreads" in text:
+                floating_data = extract_medical_spreads_from_page(lines, "Floating")
+
+            if "Fixed-rate spreads" in text:
+                fixed_data = extract_medical_spreads_from_page(lines, "Fixed")
+
     layout = {
-        "layout": {
-            "type": "grid",
-            "title": "",
-            "rows": []
-        }
+        "type": "grid",
+        "title": f"Medical CRE Spreads – {quarter}",
+        "rows": []
     }
 
-    quarter_year = "Unknown"
+    for label, value in {**fixed_data, **floating_data}.items():
+        layout["rows"].append({"title": label, "value": value})
 
-    def extract_spreads(line):
-        return re.findall(r"[-+]?\d+\.\d+%", line)
+    output_path = "medical_spreads.json"
+    with open(output_path, "w") as f:
+        json.dump({"layout": layout}, f, indent=2)
 
-    with pdfplumber.open(pdf_file) as pdf:
-        # Search for "Q1 2025" style in first page
-        first_page_text = pdf.pages[0].extract_text()
-        match = re.search(r"(Q[1-4])\s+(\d{4})", first_page_text)
-        if match:
-            quarter_year = f"{match.group(2)}{match.group(1)}"
-            layout["layout"]["title"] = f"Medical CRE Spreads – {match.group(1)} {match.group(2)}"
-        else:
-            layout["layout"]["title"] = "Medical CRE Spreads"
+    print(f"✅ Extracted spreads and saved: {output_path}")
+    return output_path
 
-        for page_number in [1, 2]:  # 0-indexed pages 2 & 3
-            page = pdf.pages[page_number]
-            text = page.extract_text()
+def commit_to_git(file_path):
+    subprocess.run(["git", "add", file_path], check=True)
+    subprocess.run(["git", "commit", "-m", "Update medical spreads [ci skip]"], check=True)
+    subprocess.run(["git", "push"], check=True)
+    print("✅ Git commit and push completed.")
 
-            for line in text.splitlines():
-                if "Medical" in line:
-                    spreads = extract_spreads(line)
-                    if len(spreads) >= 4:
-                        prefix = "Fixed" if page_number == 1 else "Floating"
-                        for i, label in enumerate(labels):
-                            layout["layout"]["rows"].append({
-                                "title": f"{prefix} {label}",
-                                "value": spreads[i]
-                            })
-                    break
-#save file and to overwrite existing 
-    output_file = Path("medical_spreads.json")
-    with output_file.open("w") as f:
-        json.dump(layout, f, indent=2)
-    print(f"✅ Saved: {output_file}")
+def main():
+    folder = "market spreads report"
+    latest_pdf = find_latest_pdf(folder)
+    if not latest_pdf:
+        print("❌ No PDF found in folder.")
+        return
+
+    print(f"📄 Using latest PDF: {latest_pdf}")
+    output_file = extract_and_write_json(latest_pdf)
+    commit_to_git(output_file)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python extract_medical_spreads.py <pdf_path>")
-        sys.exit(1)
-
-    pdf_input = sys.argv[1]
-    extract_medical_spreads(pdf_input)
+    main()
