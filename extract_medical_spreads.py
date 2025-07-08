@@ -8,16 +8,16 @@ import pdfplumber
 def sanitize(text):
     return re.sub(r'\s+', ' ', text.strip().lower())
 
-def extract_medical_spreads_from_page(lines, label):
+def extract_medical_spreads_from_page(lines):
     for line in lines:
         if sanitize(line).startswith("medical"):
             parts = re.split(r'\s+', line.strip())
             if len(parts) >= 5:
                 return {
-                    f"{label} Low Risk": parts[1],
-                    f"{label} Core": parts[2],
-                    f"{label} High Risk": parts[3],
-                    f"{label} QoQ": parts[4]
+                    "Low Risk": parts[1],
+                    "Core": parts[2],
+                    "High Risk": parts[3],
+                    "QoQ": parts[4]
                 }
     return {}
 
@@ -47,19 +47,30 @@ def extract_and_write_json(latest_pdf):
                 quarter = get_quarter_and_year(text)
 
             if "Floating-rate spreads" in text:
-                floating_data = extract_medical_spreads_from_page(lines, "Floating")
+                floating_data = extract_medical_spreads_from_page(lines)
 
             if "Fixed-rate spreads" in text:
-                fixed_data = extract_medical_spreads_from_page(lines, "Fixed")
+                fixed_data = extract_medical_spreads_from_page(lines)
 
     layout = {
         "type": "grid",
-        "title": f"Medical CRE Spreads – {quarter}",
+        "title": f"Chatham Financial Medical CRE Spreads – {quarter}",
         "rows": []
     }
 
-    for label, value in {**fixed_data, **floating_data}.items():
-        layout["rows"].append({"title": label, "value": value})
+    for label in ["Low Risk", "Core", "High Risk", "QoQ"]:
+        if label in fixed_data:
+            layout["rows"].append({
+                "title": label,
+                "value": fixed_data[label]
+            })
+
+    for label in ["Low Risk", "Core", "High Risk", "QoQ"]:
+        if label in floating_data:
+            layout["rows"].append({
+                "title": label,
+                "value": floating_data[label]
+            })
 
     output_path = "medical_spreads.json"
     with open(output_path, "w") as f:
@@ -71,7 +82,6 @@ def extract_and_write_json(latest_pdf):
 def commit_to_git(file_path):
     subprocess.run(["git", "add", file_path], check=True)
 
-    # Check if there's anything to commit
     result = subprocess.run(["git", "diff", "--cached", "--quiet"])
     if result.returncode == 0:
         print("ℹ️ No changes to commit.")
@@ -81,7 +91,6 @@ def commit_to_git(file_path):
     subprocess.run(["git", "pull", "--rebase"], check=True)
     subprocess.run(["git", "push"], check=True)
     print("✅ Git commit and push completed.")
-
 
 def main():
     folder = "market spreads report"
