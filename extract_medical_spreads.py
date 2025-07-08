@@ -70,9 +70,18 @@ def extract_and_write_json(latest_pdf):
 
 def commit_to_git(file_path):
     subprocess.run(["git", "add", file_path], check=True)
+
+    # Check if there's anything to commit
+    result = subprocess.run(["git", "diff", "--cached", "--quiet"])
+    if result.returncode == 0:
+        print("ℹ️ No changes to commit.")
+        return
+
     subprocess.run(["git", "commit", "-m", "Update medical spreads [ci skip]"], check=True)
+    subprocess.run(["git", "pull", "--rebase"], check=True)
     subprocess.run(["git", "push"], check=True)
     print("✅ Git commit and push completed.")
+
 
 def main():
     folder = "market spreads report"
