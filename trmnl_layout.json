@@ -13,7 +13,7 @@
       },
       {
         "title": "10-Year Treasury",
-        "value": "4.34%"
+        "value": "4.38%"
       },
       {
         "title": "Prime Rate",
@@ -21,21 +21,21 @@
       },
       {
         "title": "Updated",
-        "value": "2025-07-31 13:14:45 MST"
+        "value": "2025-07-31 14:12:44 MST"
       }
     ],
     "fixedRates": [
       {
         "title": "Low Risk",
-        "value": "6.34%"
+        "value": "6.38%"
       },
       {
         "title": "Core",
-        "value": "6.94%"
+        "value": "6.98%"
       },
       {
         "title": "High Risk",
-        "value": "8.34%"
+        "value": "8.38%"
       }
     ],
     "floatingRates": [
