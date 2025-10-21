@@ -1,7 +1,7 @@
 # TRMNLmoneyRates
 Making a plugin for TRMNL e-ink display with custom fields from 
 -St. Louis Federal Reserve FRED data
--Chatham Finanical quarterly CRE market spreads data (email distribution list - some manual setup and local extraction needed here but the request for the PDF is free from Chatham Financial website https://www.chathamfinancial.com/insights/)
+-Chatham Finanical quarterly CRE market spreads data (email distribution list - some manual setup and local extraction needed here but the request for the PDF is free from Chatham Financial website https://www.chathamfinancial.com/insights/) (Doesn't seem to be paywalled/gatekept. Last known PDF web link was https://access.chathamfinancial.com/market-credit-spreads-q3-2025)
 
 More Details:
 ![image](https://github.com/user-attachments/assets/9e309a69-3483-441b-be52-94584e568ba2)
