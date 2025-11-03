@@ -5,7 +5,7 @@
     "rows": [
       {
         "title": "Fed Funds Rate",
-        "value": "4.22%"
+        "value": "4.09%"
       },
       {
         "title": "SOFR",
@@ -17,11 +17,11 @@
       },
       {
         "title": "Prime Rate",
-        "value": "7.38%"
+        "value": "7.23%"
       },
       {
         "title": "Updated",
-        "value": "2025-11-03 14:11:45 MST"
+        "value": "2025-11-03 15:12:31 MST"
       }
     ],
     "fixedRates": [
