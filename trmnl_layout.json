@@ -9,7 +9,7 @@
       },
       {
         "title": "SOFR",
-        "value": "3.91%"
+        "value": "3.92%"
       },
       {
         "title": "10-Year Treasury",
@@ -21,7 +21,7 @@
       },
       {
         "title": "Updated",
-        "value": "2025-11-07 05:24:42 MST"
+        "value": "2025-11-07 06:22:59 MST"
       }
     ],
     "fixedRates": [
@@ -41,15 +41,15 @@
     "floatingRates": [
       {
         "title": "Low Risk",
-        "value": "5.61%"
+        "value": "5.62%"
       },
       {
         "title": "Core",
-        "value": "6.41%"
+        "value": "6.42%"
       },
       {
         "title": "High Risk",
-        "value": "7.71%"
+        "value": "7.72%"
       }
     ]
   }
