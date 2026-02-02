@@ -5,7 +5,7 @@
     "rows": [
       {
         "title": "Fed Funds Rate",
-        "value": "3.72%"
+        "value": "3.64%"
       },
       {
         "title": "SOFR",
@@ -13,29 +13,29 @@
       },
       {
         "title": "10-Year Treasury",
-        "value": "4.24%"
+        "value": "4.26%"
       },
       {
         "title": "Prime Rate",
-        "value": "6.83%"
+        "value": "6.75%"
       },
       {
         "title": "Updated",
-        "value": "2026-02-02 11:31:48 MST"
+        "value": "2026-02-02 16:20:08 MST"
       }
     ],
     "fixedRates": [
       {
         "title": "Low Risk",
-        "value": "6.24%"
+        "value": "6.26%"
       },
       {
         "title": "Core",
-        "value": "6.84%"
+        "value": "6.86%"
       },
       {
         "title": "High Risk",
-        "value": "8.24%"
+        "value": "8.26%"
       }
     ],
     "floatingRates": [
