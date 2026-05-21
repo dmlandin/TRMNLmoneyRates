@@ -9,7 +9,7 @@
       },
       {
         "title": "SOFR",
-        "value": "3.51%"
+        "value": "3.5%"
       },
       {
         "title": "10-Year Treasury",
@@ -21,7 +21,7 @@
       },
       {
         "title": "Updated",
-        "value": "2026-05-21 03:32:17 MST"
+        "value": "2026-05-21 06:56:12 MST"
       }
     ],
     "fixedRates": [
@@ -41,15 +41,15 @@
     "floatingRates": [
       {
         "title": "Low Risk",
-        "value": "5.21%"
+        "value": "5.2%"
       },
       {
         "title": "Core",
-        "value": "6.01%"
+        "value": "6.0%"
       },
       {
         "title": "High Risk",
-        "value": "7.31%"
+        "value": "7.3%"
       }
     ]
   }
