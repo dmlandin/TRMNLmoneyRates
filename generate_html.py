@@ -19,11 +19,14 @@ def fetch_latest(series_id):
         "api_key": API_KEY,
         "file_type": "json",
         "sort_order": "desc",
-        "limit": 1
+        "limit": 10  # fetch a few in case recent ones are "."
     }
     resp = requests.get(url, params=params)
     data = resp.json()
-    return data['observations'][0]['value']
+    for obs in data['observations']:
+        if obs['value'] != '.':
+            return obs['value']
+    raise ValueError(f"No valid observations found for {series_id}")
 
 # Fetch rates
 values = {label: float(fetch_latest(code)) for label, code in SERIES.items()}
