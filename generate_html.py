@@ -19,10 +19,12 @@ def fetch_latest(series_id):
         "api_key": API_KEY,
         "file_type": "json",
         "sort_order": "desc",
-        "limit": 10  # fetch a few in case recent ones are "."
+        "limit": 10
     }
     resp = requests.get(url, params=params)
     data = resp.json()
+    if 'observations' not in data:
+        raise ValueError(f"FRED API error for {series_id}: {data}")
     for obs in data['observations']:
         if obs['value'] != '.':
             return obs['value']
