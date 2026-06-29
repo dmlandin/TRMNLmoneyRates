@@ -1,12 +1,16 @@
 name: Update Money Rates Page
 
+# ---------------------------------------------------------------------------
+# MIGRATED: the hourly schedule now runs on a local Unraid Docker container
+# (see DEPLOY-UNRAID.md). The cron trigger is disabled so the local server and
+# GitHub Actions don't both push rate updates. This workflow is kept only as a
+# manual fallback -- trigger it from the Actions tab ("Run workflow") if the
+# local server is offline. Re-enable by uncommenting the `schedule:` block.
+# ---------------------------------------------------------------------------
 on:
-  schedule:
-    - cron: "0 * * * *"
+  # schedule:
+  #   - cron: "0 * * * *"
   workflow_dispatch:
-  push:
-    branches:
-      -main
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -1,0 +1,8 @@
+.git
+.github
+.idea
+.claude
+__pycache__/
+*.pyc
+Market spreads report/
+*.pdf

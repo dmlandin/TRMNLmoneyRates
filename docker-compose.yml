@@ -1,0 +1,19 @@
+services:
+  trmnl-rates:
+    build: .
+    image: trmnl-money-rates:latest
+    container_name: trmnl-money-rates
+    restart: unless-stopped
+    environment:
+      # Required
+      FRED_API_KEY: "${FRED_API_KEY:?set FRED_API_KEY in .env}"
+      GITHUB_TOKEN: "${GITHUB_TOKEN:?set GITHUB_TOKEN in .env}"
+      # Optional (defaults shown)
+      REPO_URL: "https://github.com/dmlandin/TRMNLmoneyRates.git"
+      BRANCH: "main"
+      RUN_ON_START: "true"
+    volumes:
+      - trmnl-data:/data
+
+volumes:
+  trmnl-data:
