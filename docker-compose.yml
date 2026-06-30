@@ -12,8 +12,14 @@ services:
       REPO_URL: "https://github.com/dmlandin/TRMNLmoneyRates.git"
       BRANCH: "main"
       RUN_ON_START: "true"
+      # Persist logs to the mounted /logs dir below. Unset to log to console only.
+      LOG_DIR: "/logs"
+      # Keep this many days of per-day logfiles; older ones are pruned each run.
+      LOG_RETENTION_DAYS: "2"
     volumes:
       - trmnl-data:/data
+      # Host dir of your choosing -> /logs. Daily updater-<date>.log files land here.
+      - ./logs:/logs
 
 volumes:
   trmnl-data:

@@ -58,10 +58,19 @@ changes.)
 | Variable: `GITHUB_TOKEN` | *(your fine-grained PAT)* |
 | Variable: `REPO_URL` | `https://github.com/dmlandin/TRMNLmoneyRates.git` |
 | Variable: `BRANCH` | `main` |
+| Variable: `LOG_DIR` | `/logs` |
+| Variable: `LOG_RETENTION_DAYS` | `2` |
 | Path: `/data` | `/mnt/user/appdata/trmnl-money-rates` |
+| Path: `/logs` | *(any host dir you choose, e.g. `/mnt/user/appdata/trmnl-money-rates/logs`)* |
 
 Set the two secret variables to **masked** if you like. Apply — it starts
 immediately (runs once on start, then hourly).
+
+Logs (including any Python errors) are written to per-day files named
+`updater-<date>.log` inside whatever host directory you map to `/logs`, and
+files older than `LOG_RETENTION_DAYS` (default 2) are pruned automatically each
+run. Leave `LOG_DIR` unset to keep logs in the container console only
+(`docker logs`).
 
 ## Option B — docker-compose (CLI)
 
@@ -90,6 +99,8 @@ You should see `Starting rate update.` then `Pushed updated rates.` (or
 | `REPO_URL` | no | this repo | Repo to update |
 | `BRANCH` | no | `main` | Branch to push to |
 | `RUN_ON_START` | no | `true` | Run once immediately on container start |
+| `LOG_DIR` | no | — | Container path for persistent logs (map to a host dir); unset = console only |
+| `LOG_RETENTION_DAYS` | no | `2` | Days of per-day logfiles to keep |
 | `GIT_AUTHOR_NAME` | no | `trmnl-rates-bot` | Commit author name |
 | `GIT_AUTHOR_EMAIL` | no | `trmnl-rates-bot@users.noreply.github.com` | Commit author email |
 

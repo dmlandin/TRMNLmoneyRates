@@ -17,8 +17,33 @@ GIT_NAME="${GIT_AUTHOR_NAME:-trmnl-rates-bot}"
 GIT_EMAIL="${GIT_AUTHOR_EMAIL:-trmnl-rates-bot@users.noreply.github.com}"
 RUN_ON_START="${RUN_ON_START:-true}"
 WORKDIR="/data/repo"
+# Optional: mount a host directory here to keep logs across container restarts.
+LOG_DIR="${LOG_DIR:-}"
+# How many days of per-day logfiles to keep (older ones are pruned each run).
+LOG_RETENTION_DAYS="${LOG_RETENTION_DAYS:-2}"
 
-log() { echo "[$(date -u +'%Y-%m-%dT%H:%M:%SZ')] $*"; }
+# Path of today's logfile (one file per UTC day, so retention is age-based).
+logfile() { echo "$LOG_DIR/updater-$(date -u +%F).log"; }
+
+# Emit a timestamped line to the console and, if LOG_DIR is set, today's file.
+log() {
+  local line="[$(date -u +'%Y-%m-%dT%H:%M:%SZ')] $*"
+  echo "$line"
+  [ -n "$LOG_DIR" ] && echo "$line" >> "$(logfile)"
+}
+
+# Delete per-day logfiles older than the retention window. -mtime +N matches
+# files last modified more than N*24h ago, so +(DAYS-1) keeps the last DAYS.
+prune_logs() {
+  [ -n "$LOG_DIR" ] || return 0
+  find "$LOG_DIR" -maxdepth 1 -name 'updater-*.log' \
+    -mtime "+$((LOG_RETENTION_DAYS - 1))" -delete 2>/dev/null || true
+}
+
+if [ -n "$LOG_DIR" ]; then
+  mkdir -p "$LOG_DIR"
+  log "Persisting logs to $LOG_DIR/updater-<date>.log (keeping ${LOG_RETENTION_DAYS} days)"
+fi
 
 # --- One-time git setup -----------------------------------------------------
 git config --global user.name "$GIT_NAME"
@@ -44,8 +69,15 @@ refresh_repo() {
 
 run_job() {
   log "Starting rate update."
+  prune_logs
   refresh_repo
-  ( cd "$WORKDIR" && FRED_API_KEY="$FRED_API_KEY" python generate_html.py )
+  # Capture the generator's own stdout/stderr (incl. tracebacks) to today's
+  # logfile when LOG_DIR is set, while still showing it in `docker logs`.
+  if [ -n "$LOG_DIR" ]; then
+    ( cd "$WORKDIR" && FRED_API_KEY="$FRED_API_KEY" python generate_html.py ) 2>&1 | tee -a "$(logfile)"
+  else
+    ( cd "$WORKDIR" && FRED_API_KEY="$FRED_API_KEY" python generate_html.py )
+  fi
 
   cd "$WORKDIR"
   git add rates.html trmnl_layout.json
