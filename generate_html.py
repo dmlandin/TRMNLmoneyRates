@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import requests
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -13,7 +14,7 @@ SERIES = {
     "30-Year Treasury": "DGS30"
 }
 
-def fetch_latest(series_id):
+def fetch_latest(series_id, retries=4, backoff=2):
     url = "https://api.stlouisfed.org/fred/series/observations"
     params = {
         "series_id": series_id,
@@ -22,14 +23,23 @@ def fetch_latest(series_id):
         "sort_order": "desc",
         "limit": 10
     }
-    resp = requests.get(url, params=params)
-    data = resp.json()
-    if 'observations' not in data:
-        raise ValueError(f"FRED API error for {series_id}: {data}")
-    for obs in data['observations']:
-        if obs['value'] != '.':
-            return obs['value']
-    raise ValueError(f"No valid observations found for {series_id}")
+    last_err = None
+    for attempt in range(retries):
+        try:
+            resp = requests.get(url, params=params, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
+            return data['observations'][0]['value']
+        except (requests.RequestException, ValueError, KeyError, IndexError) as err:
+            # Transient FRED blips (429/5xx, empty body, momentary network loss)
+            # otherwise crash the whole job; back off and retry instead.
+            last_err = err
+            if attempt < retries - 1:
+                wait = backoff * (2 ** attempt)
+                print(f"FRED fetch for {series_id} failed ({err}); "
+                      f"retry {attempt + 1}/{retries - 1} in {wait}s")
+                time.sleep(wait)
+    raise RuntimeError(f"FRED fetch failed for {series_id} after {retries} attempts: {last_err}")
 
 # Fetch rates
 values = {label: float(fetch_latest(code)) for label, code in SERIES.items()}

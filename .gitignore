@@ -5,3 +5,9 @@ market spreads report/*.pdf
 # Python junk
 __pycache__/
 *.pyc
+
+# Local Docker secrets
+.env
+
+# JetBrains IDE
+.idea/
