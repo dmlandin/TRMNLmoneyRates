@@ -10,7 +10,8 @@ SERIES = {
     "Fed Funds Rate": "FEDFUNDS",
     "SOFR": "SOFR",
     "10-Year Treasury": "DGS10",
-    "Prime Rate": "MPRIME"
+    "Prime Rate": "MPRIME",
+    "30-Year Treasury": "DGS30"
 }
 
 def fetch_latest(series_id, retries=4, backoff=2):
@@ -20,7 +21,7 @@ def fetch_latest(series_id, retries=4, backoff=2):
         "api_key": API_KEY,
         "file_type": "json",
         "sort_order": "desc",
-        "limit": 1
+        "limit": 10
     }
     last_err = None
     for attempt in range(retries):
@@ -82,6 +83,7 @@ html = f"""<!DOCTYPE html>
     <p><strong>Fed Funds Rate:</strong> {values['Fed Funds Rate']}%</p>
     <p><strong>SOFR:</strong> {values['SOFR']}%</p>
     <p><strong>10-Year Treasury:</strong> {values['10-Year Treasury']}%</p>
+    <p><strong>30-Year Treasury:</strong> {values['30-Year Treasury']}%</p>
     <p><strong>Prime Rate:</strong> {values['Prime Rate']}%</p>
 
     <h3>💡 Fixed Rates (10Y + Spread)</h3>
@@ -116,6 +118,7 @@ layout_json = {
             {"title": "SOFR", "value": f"{values['SOFR']}%"},
             {"title": "10-Year Treasury", "value": f"{values['10-Year Treasury']}%"},
             {"title": "Prime Rate", "value": f"{values['Prime Rate']}%"},
+            {"title": "30-Year Treasury", "value": f"{values['30-Year Treasury']}%"},
             {"title": "Updated", "value": timestamp}
         ],
         "fixedRates": fixed_rates,
