@@ -13,7 +13,7 @@
       },
       {
         "title": "10-Year Treasury",
-        "value": "4.8%"
+        "value": "4.83%"
       },
       {
         "title": "Prime Rate",
@@ -21,25 +21,25 @@
       },
       {
         "title": "30-Year Treasury",
-        "value": "5.25%"
+        "value": "5.28%"
       },
       {
         "title": "Updated",
-        "value": "2026-09-10 12:22:49 MST"
+        "value": "2026-09-10 15:07:55 MST"
       }
     ],
     "fixedRates": [
       {
         "title": "Low Risk",
-        "value": "6.8%"
+        "value": "6.83%"
       },
       {
         "title": "Core",
-        "value": "7.4%"
+        "value": "7.43%"
       },
       {
         "title": "High Risk",
-        "value": "8.8%"
+        "value": "8.83%"
       }
     ],
     "floatingRates": [
@@ -57,11 +57,11 @@
       }
     ],
     "asOf": {
-      "Fed Funds Rate": "2026-09-08",
+      "Fed Funds Rate": "2026-09-09",
       "SOFR": "2026-09-09",
-      "10-Year Treasury": "2026-09-08",
-      "Prime Rate": "2026-09-02",
-      "30-Year Treasury": "2026-09-08"
+      "10-Year Treasury": "2026-09-09",
+      "Prime Rate": "2026-09-09",
+      "30-Year Treasury": "2026-09-09"
     }
   }
 }
