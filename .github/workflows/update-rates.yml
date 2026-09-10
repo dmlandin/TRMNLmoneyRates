@@ -1,16 +1,24 @@
 name: Update Money Rates Page
 
 # ---------------------------------------------------------------------------
-# MIGRATED: the hourly schedule now runs on a local Unraid Docker container
-# (see DEPLOY-UNRAID.md). The cron trigger is disabled so the local server and
-# GitHub Actions don't both push rate updates. This workflow is kept only as a
-# manual fallback -- trigger it from the Actions tab ("Run workflow") if the
-# local server is offline. Re-enable by uncommenting the `schedule:` block.
+# This workflow is the active updater. A Docker/Unraid path also exists (see
+# DEPLOY-UNRAID.md) but is currently INACTIVE. Only one of the two should ever
+# run at a time -- if the Docker container is started, comment out the
+# `schedule:` block below so both don't push competing rate updates.
 # ---------------------------------------------------------------------------
 on:
-  # schedule:
-  #   - cron: "0 * * * *"
+  schedule:
+    - cron: "0 * * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write
+
+# A delayed hourly run must not overlap one that is still running.
+concurrency:
+  group: update-rates
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,7 +35,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install -r requirements.txt
 
       - name: Generate updated rates.html
         env:
@@ -38,7 +46,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@users.noreply.github.com"
-          git add rates.html rates.json trmnl_layout.json medical_spreads.json
-          git commit -m "Update rates.html [ci skip]" || echo "No changes to commit"
+          git add rates.html trmnl_layout.json
+          git commit -m "Update rates [ci skip]" || echo "No changes to commit"
+          git pull --rebase origin main
           git push
-

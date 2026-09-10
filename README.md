@@ -13,3 +13,7 @@ There are two main features:
 TRMNL then polls both JSON and displays that data -> the TRMNL markup.html is NOT USED by TRMNL.  TRMNL has a specific view and edit markup window to create the page.  The file in this repo is simply a copy/backup.  
 
 FYI - code is mostly LLM generated. I wouldn't say 'vibe coded' as it was a starting point and I've made changes from there.  
+
+## Data sources
+
+Rates come from the St. Louis Fed FRED API. The script deliberately uses the **daily** series `DFF` (effective federal funds rate) and `DPRIME` (bank prime loan rate) rather than `FEDFUNDS` and `MPRIME`. Those two are monthly averages of the daily figures and are only published in the first week of the following month, so using them meant the displayed Fed Funds and Prime values could be up to seven weeks stale. `SOFR`, `DGS10`, and `DGS30` were already daily series. Daily series carry a `.` value on weekends and market holidays, so the script walks back to the most recent real observation and records that observation date in the `asOf` block of `trmnl_layout.json`.
