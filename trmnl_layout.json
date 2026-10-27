@@ -21,11 +21,11 @@
       },
       {
         "title": "30-Year Treasury",
-        "value": "5.33%"
+        "value": "5.31%"
       },
       {
         "title": "Updated",
-        "value": "2026-10-27 12:07:50 MST"
+        "value": "2026-10-27 16:23:41 MST"
       }
     ],
     "fixedRates": [
@@ -57,11 +57,11 @@
       }
     ],
     "asOf": {
-      "Fed Funds Rate": "2026-10-23",
+      "Fed Funds Rate": "2026-10-26",
       "SOFR": "2026-10-26",
-      "10-Year Treasury": "2026-10-23",
-      "Prime Rate": "2026-10-21",
-      "30-Year Treasury": "2026-10-23"
+      "10-Year Treasury": "2026-10-26",
+      "Prime Rate": "2026-10-26",
+      "30-Year Treasury": "2026-10-26"
     }
   }
 }
